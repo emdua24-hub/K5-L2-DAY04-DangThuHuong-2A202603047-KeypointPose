@@ -174,40 +174,36 @@ Nguồn ảnh: COCO val2017 / Wikimedia Commons.
 
 | Ảnh | Số skeleton | Số người dưới 60 px | Ca khó nhất |
 |---|---:|---:|---|
-| | | | |
-| | | | |
-| | | | |
+| `000000073537.jpg` | 3 | 0 | Người đàn ông hói ở tiền cảnh quay lưng về camera, chỉ thấy đầu, tai và vai; mặt và phần lớn khớp không thấy nên phải cân nhắc từng điểm `v = 1` / `v = 0` |
+| `000000188948.jpg` | 3 | 0 | Người áo đỏ đứng sau bị người áo đen che gần hết; người đứng trước quay lưng, tay giơ lên nên phải xác định trái/phải theo người. Người chơi tennis trên màn hình TV không gán |
+| `000000337458.jpg` | 3 | 0 | Hai người quay lưng đứng sát nhau ở góc dưới bên trái, chồng lên nhau nên phải lần từng chi; người đứng ở góc trên bên phải nhỏ (khoảng 66 px), sát ngưỡng 60 px |
 
-Kết quả `src/check_submission.py` cho `HoVaTen_bonus_persons.zip`:
+Kết quả `src/check_submission.py` cho `DangThuHuong_bonus_persons.zip`:
 
 ```text
-(dán ở đây)
+- File person: DangThuHuong_bonus_persons.zip
+  Số ảnh: 3 · số skeleton `person`: 9 · mỗi annotation 51 số
+  Skeleton theo ảnh: 000000073537=3, 000000188948=3, 000000337458=3
+  Cờ v: v=2 80 (52%) · v=1 17 (11%) · v=0 56 (37%)
+  num_keypoints trung bình: 10.8
+- Ghi chú: 56 điểm v = 0 vẫn mang tọa độ cũ (CVAT 2.x xuất như vậy; chuẩn COCO ghi 0, 0). Không phải lỗi: điểm v = 0 bị bỏ qua khi huấn luyện và khi chấm.
+- Số [LỖI]: 0 · số [CẢNH BÁO]: 0
+Kết quả: ĐẠT
 ```
 
 ### B2 — 5 ảnh khuôn mặt đen trắng / hồng ngoại
 
 Ảnh không màu khó hơn ở điểm nào? Kính râm trên ảnh hồng ngoại có còn là `v = 1` không?
 
-...
+Ảnh không màu khó hơn vì không còn màu để phân biệt các vùng trên mặt: môi gần cùng tông xám với da nên khó thấy mép môi và khóe miệng; mép mí mắt, lông mi và bóng dưới mắt cũng lẫn vào nhau nên phải phóng to nhiều hơn mới đặt được mí trên, mí dưới. Ca khó nhất là `face_68290.jpg`: râu che gần hết miệng, không thấy rõ môi, nên tôi đặt 4 điểm miệng (`mouth_left`, `mouth_right`, `lip_upper`, `lip_lower`) là `occluded` (`v = 1`), ước lượng theo khe giữa ria mép và râu cằm.
+
+Kính râm trên ảnh hồng ngoại không nhất thiết là `v = 1`. Ánh sáng hồng ngoại gần xuyên qua được nhiều loại tròng kính râm, nên trên ảnh hồng ngoại có thể vẫn thấy mắt sau kính; khi đó mắt thấy rõ thì để `v = 2`. Chỉ khi tròng kính vẫn tối, không thấy mắt nhưng ước lượng chắc theo gọng thì mới để `v = 1`. Vì vậy cờ phụ thuộc vào việc có nhìn thấy mắt trên ảnh hay không, không phụ thuộc vào việc người đó có đeo kính râm.
 
 ### B3 — Model so với nhãn của tôi (không tính điểm)
 
-- Demo đã dùng:
-- Ảnh đã thử:
-
-1. Model có trả điểm cho khớp bị che, hay khớp ngoài ảnh không? Confidence ở các điểm đó thế nào?
-
-   ...
-
-2. Với người quay lưng, model có đổi trái/phải không?
-
-   ...
-
-3. Bộ điểm của model có giống 17 điểm COCO không?
-
-   ...
+Không làm.
 
 ## 9. Tài liệu tham khảo và công cụ AI đã dùng
 
 - Tài liệu của lab: `README.md`, `CHECKPOINTS.md`, `docs/GUIDELINE.md`, `docs/CVAT_CHEATSHEET.md`, `SUBMISSION.md`.
-- Claude (trợ lý AI dạng chat): hỏi cách dùng CVAT (đổi cờ một điểm, không có nút lật skeleton), hỏi cách áp quy tắc cờ `v` cho điểm bị che và mắt sau kính râm, giải thích các `[CẢNH BÁO]` của `src/check_submission.py`, và điền các phần thông tin / số liệu lấy từ file xuất (mục 0, 1, 2, 5). Không dùng AI để sinh điểm, và không dùng cho mục 3, 4, 7.
+- Claude (trợ lý AI dạng chat): hỏi cách dùng CVAT (đổi cờ một điểm, không có nút lật skeleton), hỏi cách áp quy tắc cờ `v` cho điểm bị che và mắt sau kính râm, giải thích các `[CẢNH BÁO]` của `src/check_submission.py`, và điền các phần thông tin / số liệu lấy từ file xuất (mục 0, 1, 2, 5); hỗ trợ soạn phần Bonus B1, B2 dựa trên nhãn tôi đã gán. Không dùng AI để sinh điểm, và không dùng cho mục 3, 4, 7.
